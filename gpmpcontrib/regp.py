@@ -73,7 +73,21 @@ def two_sided(t, d, xi, zi, n_ranges):
 
     return G, R_list
 
+def levelset_one_sided_strategy(selector, n_obs_min, upper, options, xi_perimeter, zi_perimeter, zi_min, zi_max):
+    if upper:
+        xi_p_upper = xi_perimeter[zi_perimeter >= options["t"]]
+        zi_p_upper = zi_perimeter[zi_perimeter >= options["t"]]
 
+        if zi_p_upper.shape[0] < n_obs_min:
+            return [-np.inf, np.inf], [[[np.inf, np.inf]]]
+
+        return one_sided(
+            selector(xi_p_upper, zi_p_upper), options["t"], zi_max, options["n_ranges"]
+        )
+    else:
+        raise NotImplementedError
+
+exp_number_multiple = 5
 levelset_strategy = {
     "Constant": lambda l, rng, box, options: lambda xi, zi: two_sided(
         options["t"], np.quantile(np.abs(zi[:options["n_init"]] - options["t"]), l), xi, zi, options["n_ranges"]
@@ -83,6 +97,29 @@ levelset_strategy = {
     ),
     "Spatial": lambda l, rng, box, options: lambda xi, zi: two_sided(
         options["t"], get_rectified_spatial_quantile(xi, np.abs(zi - options["t"]), box, rng, l), xi, zi, options["n_ranges"]
+    ),
+    "ConstantRight": lambda l, rng, box, options: lambda xi, zi: levelset_one_sided_strategy(
+        lambda _x, _z: np.quantile(_z, l),
+        exp_number_multiple * np.ceil(1/l),
+        True,
+        options,
+        xi[:options["n_init"], :],
+        zi[:options["n_init"]],
+        zi.min(),
+        zi.max()
+    ),
+    "ConcentrationRight": lambda l, rng, box, options: lambda xi, zi: levelset_one_sided_strategy(
+        lambda _x, _z: np.quantile(_z, l), exp_number_multiple * np.ceil(1/l), True, options, xi, zi, zi.min(), zi.max()
+    ),
+    "SpatialRight": lambda l, rng, box, options: lambda xi, zi: levelset_one_sided_strategy(
+        lambda _x, _z: get_rectified_spatial_quantile(_x, _z, box, rng, l),
+        exp_number_multiple * np.ceil(1 / l),
+        True,
+        options,
+        xi,
+        zi,
+        zi.min(),
+        zi.max()
     ),
 }
 

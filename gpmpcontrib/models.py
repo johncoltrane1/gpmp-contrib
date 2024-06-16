@@ -976,7 +976,7 @@ class Model_ConstantMeanMaternp_reGP(Model_ConstantMeanMaternpML):
             # Default value
             options["n_ranges"]  = 10
 
-        if strategy == "Constant":
+        if "Constant" in strategy:
             if "n_init" not in param:
                 raise ValueError(f"'n_init' should be specified in 'param'")
             options["n_init"]  = param["n_init"]
