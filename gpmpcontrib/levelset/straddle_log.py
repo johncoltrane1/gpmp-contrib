@@ -7,11 +7,17 @@ import gpmp.num as gnp
 from gpmpcontrib import SubsetPointwiseCriterion
 
 
-class Straddle(SubsetPointwiseCriterion):
+class StraddleLog(SubsetPointwiseCriterion):
 
     def __init__(self, t, *args, **kwargs):
         self.t = t
         super().__init__(*args, **kwargs)
 
     def criterion(self, zpm, zpv):
-        return 1.96 * gnp.sqrt(zpv) - gnp.abs(zpm - self.t)
+        alpha = 1.96
+
+        n = self.zi.shape[0]
+        d = self.xi.shape[1]
+        beta_n = alpha + 4 * (1 + 2 * d) * gnp.log(n/self.n0)
+
+        return beta_n * gnp.sqrt(zpv) - gnp.abs(zpm - self.t)

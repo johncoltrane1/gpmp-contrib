@@ -28,8 +28,8 @@ class PointwiseCriterion(SequentialPrediction):
         # criterion values
         self.criterion_values = None
 
-        # criterion
-        self.criterion = self.build_criterion()
+        # Size of initial DoE
+        self.n0 = None
 
     def set_options(self, options):
         default_options = {
@@ -116,6 +116,8 @@ class PointwiseCriterion(SequentialPrediction):
             super().set_data_with_model_selection(xi, zi)
         else:
             super().set_data(xi, zi)
+
+        self.n0 = zi.shape[0]
 
         if update_search_space:
             self.update_search_space()

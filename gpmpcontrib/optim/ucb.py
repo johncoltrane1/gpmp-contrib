@@ -15,8 +15,6 @@ class UCB(SubsetPointwiseCriterion):
         self.alpha = scipy.stats.norm.ppf(self.q)
         super().__init__(*args, **kwargs)
 
-    def build_criterion(self):
-        def criterion(zpm, zpv):
-            return - zpm - self.alpha * gnp.sqrt(zpv)
-        return criterion
+    def criterion(self, zpm, zpv):
+        return - zpm - self.alpha * gnp.sqrt(zpv)
 

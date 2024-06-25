@@ -10,10 +10,8 @@ from gpmpcontrib import PointwiseCriterion
 
 class ExpectedImprovement(PointwiseCriterion):
 
-    def build_criterion(self):
-        def criterion(zpm, zpv):
-            return sampcrit.expected_improvement(-gnp.min(self.zi), -zpm, zpv)
-        return criterion
+    def criterion(self, zpm, zpv):
+        return sampcrit.expected_improvement(-gnp.min(self.zi), -zpm, zpv)
 
     def logpdf_parameterized(self):
         logpdf_parameterized_function = self.log_prob_excursion
