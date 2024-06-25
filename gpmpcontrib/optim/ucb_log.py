@@ -18,6 +18,6 @@ class UCBLOG(SubsetPointwiseCriterion):
     def criterion(self, zpm, zpv):
         n = self.zi.shape[0]
         d = self.xi.shape[1]
-        beta_n = self.alpha + 4 * (1 + 2 * d) * gnp.log(n/self.n0)
+        beta_n = self.alpha - 4 * (1 + 2 * d) * gnp.log(n/self.n0)
         return - zpm - beta_n * gnp.sqrt(zpv)
 
