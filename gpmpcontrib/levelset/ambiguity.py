@@ -7,7 +7,7 @@ import gpmp.num as gnp
 from gpmpcontrib import SubsetPointwiseCriterion
 
 
-class StraddleLog(SubsetPointwiseCriterion):
+class Ambiguity(SubsetPointwiseCriterion):
 
     def __init__(self, t, *args, **kwargs):
         self.t = t
