@@ -504,7 +504,7 @@ class SMC:
         func,
         target,
         p0,
-        xi,
+        # xi,
         debug=False,
         max_iter=50
     ):
@@ -519,8 +519,8 @@ class SMC:
             Target value.
         p0 : float
             Prescribed probability
-        xi : array
-            The current design-of-experiments.
+        # xi : array
+        #    The current design-of-experiments.
         debug : bool
             If True, print debug information.
         debug : int
@@ -535,7 +535,7 @@ class SMC:
         emergency_error_counter_max = 5
 
         stopping_tol = 0.1
-        max_criterion_xi = func(xi).numpy().max()
+        # max_criterion_xi = func(xi).numpy().max()
 
         diameter_crit_tol = 0.5
 
@@ -558,11 +558,11 @@ class SMC:
             except ParamSError as e:
                 # FIXME: Define a global default value?
                 self.particles.param_s = 0.05  # Default scaling parameter for perturbation
-                if max_criterion_xi <= next_u:
-                    message = str(e) + " Aborting only the subset-simulation since the best observation's value " \
-                                  "has been reached in {} steps.".format(cpt)
-                    break
-                else:
+                # if max_criterion_xi <= next_u:
+                #     message = str(e) + " Aborting only the subset-simulation since the best observation's value " \
+                #                   "has been reached in {} steps.".format(cpt)
+                #     break
+                if True:
                     self.emergency_error_counter += 1
                     if self.emergency_error_counter >= emergency_error_counter_max:
                         print(e)
@@ -587,28 +587,28 @@ class SMC:
                           " Target: {}, Current: {}".format(max_iter, target, u)
                 break
 
-            if max_criterion_xi <= u:
-                if (max_criterion_last_particles - u) <= stopping_tol * (max_criterion_last_particles - max_criterion_xi):
-                    message = "Subset-simulation stopping after {} steps because the numerical tolerance is reached " \
-                              "(max. design: {}, threshold: {}, max. particles: {}).".format(
-                            cpt,
-                            max_criterion_xi,
-                            u,
-                            max_criterion_last_particles
-                    )
-                    break
+            # if max_criterion_xi <= u:
+            #     if (max_criterion_last_particles - u) <= stopping_tol * (max_criterion_last_particles - max_criterion_xi):
+            #         message = "Subset-simulation stopping after {} steps because the numerical tolerance is reached " \
+            #                   "(max. design: {}, threshold: {}, max. particles: {}).".format(
+            #                 cpt,
+            #                 max_criterion_xi,
+            #                 u,
+            #                 max_criterion_last_particles
+            #         )
+            #         break
 
-            diameter_particles = gnp.cdist_xx(self.particles.x).max()
-            dist_xi_particles = gnp.custom_cdist(xi, self.particles.x).min()
-            if diameter_particles <= diameter_crit_tol * dist_xi_particles:
-                message = "Subset-simulation stopping after {} steps because the cloud has diameter {} " \
-                          "which is less than a fraction {} of the distance {} to the design-of-experiments".format(
-                        cpt,
-                        diameter_particles,
-                        diameter_crit_tol,
-                        dist_xi_particles
-                )
-                break
+            # diameter_particles = gnp.cdist_xx(self.particles.x).max()
+            # dist_xi_particles = gnp.custom_cdist(xi, self.particles.x).min()
+            # if diameter_particles <= diameter_crit_tol * dist_xi_particles:
+            #     message = "Subset-simulation stopping after {} steps because the cloud has diameter {} " \
+            #               "which is less than a fraction {} of the distance {} to the design-of-experiments".format(
+            #             cpt,
+            #             diameter_particles,
+            #             diameter_crit_tol,
+            #             dist_xi_particles
+            #     )
+            #     break
 
         if message is None:
             message = "Subset-simulation performed in {} steps.".format(cpt)
